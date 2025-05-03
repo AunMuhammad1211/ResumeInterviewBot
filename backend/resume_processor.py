@@ -7,7 +7,6 @@ def extract_text_from_pdf(pdf_path):
     all_text = ""
     for i, page in enumerate(reader.pages):
         text = page.extract_text()
-        # print(text)
         if text:
             all_text += text + "\n"
             print(f"Page {i + 1}: Text extracted")
