@@ -1,0 +1,25 @@
+# Python and virtual environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Data and generated files
+data/
+*.npy
+*.pdf
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Miscellaneous
+*.log
