@@ -30,10 +30,10 @@ numpy
 
 ### Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/AunMuhammad1211/ResumeInterviewBot
 ```
 ```bash
-cd RESUME INTERVIEW ASSISTANT BOT
+cd RESUMEINTERVIEWBOT
 ```
 
 
@@ -45,7 +45,7 @@ python -m venv venv
 ### To activate the virtual environment
 On mac:
 ```bash
-source venv/bin/activate
+venv/bin/activate
 ```
 On Windows
 ```bash
