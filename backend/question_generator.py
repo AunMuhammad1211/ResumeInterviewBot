@@ -30,5 +30,27 @@ def generate_interview_questions(resume_text, num_questions=5):
     except Exception as e:
         print(f"Error: {e}")
         return ["Failed to generate questions. Please check your API key or model name."]
+    
+def extract_strength_or_gap(text, mode="strength", max_tokens=60):
+    try:
+        prompt = (
+            f"Read the following resume excerpt and extract the key {'strengths' if mode == 'strength' else 'weaknesses or gaps'} "
+            "as specific roles, skills, or areas (like 'AI Engineer', 'Communication Skills', 'Data Analyst')."
+            f" Be concise and give 1-2 bullet points only:\n\n{text}"
+        )
+        response = client.chat.completions.create(
+            model="openai/gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You extract key strengths or gaps from resume text."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=max_tokens
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"Extraction error ({mode}): {e}")
+        return "Unknown"
 
+
+    
 
