@@ -6,11 +6,9 @@ from backend.embedding_manager import (
     create_faiss_index,
     compare_with_faiss
 )
-from backend.question_generator import generate_interview_questions
+from backend.question_generator import generate_interview_questions, extract_strength_or_gap  # ✅ Updated import
 
-
-main = Blueprint('main' ,__name__)
-
+main = Blueprint('main', __name__)
 
 @main.route('/analyze', methods=['POST'])
 def analyze():
@@ -30,23 +28,26 @@ def analyze():
             return jsonify({"error": "No chunks created from the resume text"}), 400
 
         chunk_embeddings = generate_chunk_embeddings(chunks)
-        if chunk_embeddings is None or chunk_embeddings.size == 0:  
+        if chunk_embeddings is None or chunk_embeddings.size == 0:
             return jsonify({"error": "Failed to generate embeddings for resume chunks"}), 500
 
         create_faiss_index()
 
         job_embedding = generate_job_description_embedding(job_description)
-        if job_embedding is None or job_embedding.size == 0:  
+        if job_embedding is None or job_embedding.size == 0:
             return jsonify({"error": "Failed to generate embedding for job description"}), 500
 
         indices, distances = compare_with_faiss(job_embedding, 'data/faiss_index/resume_index.faiss')
 
         matched_chunks = [chunks[i] for i in indices if i < len(chunks)]
-        strengths = [chunk.page_content if hasattr(chunk, 'page_content') else str(chunk) for chunk in matched_chunks[:3]]
-        gaps = [chunk.page_content if hasattr(chunk, 'page_content') else str(chunk)
-        for idx, chunk in enumerate(chunks) if idx not in indices[:3]][:3]
 
+        # ✅ Summarize strengths
+        strengths = [{"text": extract_strength_or_gap(chunk.page_content.strip(),mode='strength')}
+                     for chunk in matched_chunks[:3]]
 
+        # ✅ Summarize gaps
+        gaps = [{"text": extract_strength_or_gap(chunk.page_content.strip(), mode='gap')}
+                for idx, chunk in enumerate(chunks) if idx not in indices[:3]][:3]
 
         questions = generate_interview_questions(resume_text)
         if not questions:
@@ -55,14 +56,12 @@ def analyze():
 
         response = {
             "analysis": {
-            "strengths": [{"text": chunk.page_content.strip()} for chunk in matched_chunks[:3]],
-            "gaps": [{"text": chunk.page_content.strip()} for idx, chunk in enumerate(chunks)
-             if idx not in indices[:3]][:3]
-             },
+                "strengths": strengths,
+                "gaps": gaps
+            },
             "questions": questions
         }
         return jsonify(response), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
