@@ -9,7 +9,6 @@ job_description = st.text_area("Paste the job description here")
 if st.button("Analyze"):
     if resume_file and job_description:
         try:
-            # Send request to Flask backend
             response = requests.post(
                 "http://localhost:5000/analyze",
                 files={"resume": resume_file},
@@ -20,7 +19,6 @@ if st.button("Analyze"):
             if response.status_code != 200 or "analysis" not in result:
                 st.error(f"Error from backend: {result.get('error', 'Unknown error')}")
             else:
-                # Display analysis
                 st.subheader("Analysis")
                 st.write("**Strengths:**")
                 for strength in result["analysis"]["strengths"]:
@@ -29,7 +27,6 @@ if st.button("Analyze"):
                 for gap in result["analysis"]["gaps"]:
                     st.write(gap)
 
-                # Display interview questions
                 st.subheader("Interview Questions")
                 for question in result["questions"]:
                     st.write(question)
