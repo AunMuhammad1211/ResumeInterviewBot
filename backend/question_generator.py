@@ -11,7 +11,7 @@ client = OpenAI(
     base_url="https://openrouter.ai/api/v1"  
 )
 
-def generate_interview_questions(resume_text, num_questions=5):
+def generate_interview_questions(resume_text, num_questions=10):
     prompt = f"Generate {num_questions} relevant interview questions based on this resume:\n\n{resume_text}"
 
     try:
