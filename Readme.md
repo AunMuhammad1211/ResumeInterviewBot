@@ -89,8 +89,6 @@ Click "Analyze" to view strengths, gaps, and interview questions.
 
 
 
-## Deployment
-We can deploy this resume interview assistent bot on python anywhere that is a free cloud base platform to deploy your apps. 
 
 
 
